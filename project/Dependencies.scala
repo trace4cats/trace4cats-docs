@@ -22,7 +22,7 @@ object Dependencies {
 
     val catsEffect = "3.1.1"
     val http4s = "0.23.0-RC1"
-    val sttpClient3 = "3.3.6"
+    val sttpClient3 = "3.3.7"
   }
 
   lazy val trace4catsDynamicSampling = "io.janstenpickle" %% "trace4cats-dynamic-sampling" % Versions.trace4cats
