@@ -23,6 +23,9 @@ object Dependencies {
     val catsEffect = "3.1.1"
     val http4s = "0.23.0-RC1"
     val sttpClient3 = "3.3.6"
+
+    val kindProjector = "0.13.0"
+    val betterMonadicFor = "0.3.1"
   }
 
   lazy val trace4catsDynamicSampling = "io.janstenpickle" %% "trace4cats-dynamic-sampling" % Versions.trace4cats
@@ -80,4 +83,7 @@ object Dependencies {
   lazy val http4sBlazeClient = "org.http4s"                    %% "http4s-blaze-client" % Versions.http4s
   lazy val http4sBlazeServer = "org.http4s"                    %% "http4s-blaze-server" % Versions.http4s
   lazy val sttpClient3Http4s = "com.softwaremill.sttp.client3" %% "http4s-backend"      % Versions.sttpClient3
+
+  lazy val kindProjector = ("org.typelevel" % "kind-projector"     % Versions.kindProjector).cross(CrossVersion.full)
+  lazy val betterMonadicFor = "com.olegpy" %% "better-monadic-for" % Versions.betterMonadicFor
 }
