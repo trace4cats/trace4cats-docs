@@ -54,7 +54,6 @@ lazy val example = (project in file("modules/example"))
       Dependencies.trace4catsZio,
       Dependencies.trace4catsNatchez,
       Dependencies.trace4catsSttpClient3,
-      Dependencies.trace4catsTapir,
       Dependencies.trace4catsHttp4sClient,
       Dependencies.trace4catsHttp4sServer,
       Dependencies.trace4catsTailSamplingCache,
