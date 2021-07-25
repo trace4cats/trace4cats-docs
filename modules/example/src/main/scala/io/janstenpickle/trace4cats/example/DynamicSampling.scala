@@ -2,7 +2,7 @@ package io.janstenpickle.trace4cats.example
 
 import cats.Applicative
 import cats.effect.kernel.{Async, Resource, Temporal}
-import cats.effect.{ExitCode, IO, IOApp}
+import cats.effect.{IO, ResourceApp}
 import fs2.Stream
 import io.janstenpickle.trace4cats.inject.EntryPoint
 import io.janstenpickle.trace4cats.kernel.SpanSampler
@@ -12,7 +12,7 @@ import io.janstenpickle.trace4cats.sampling.dynamic.http.HttpDynamicSpanSampler
 
 import scala.concurrent.duration._
 
-object DynamicSampling extends IOApp {
+object DynamicSampling extends ResourceApp.Forever {
 
   // creates a sampler and binds it to 8080
   // try "curl http:///localhost:8080/trace4cats/config" to see how the sampler is configured
@@ -32,8 +32,8 @@ object DynamicSampling extends IOApp {
     ep.root("root").flatMap(_.child(ts.toString(), SpanKind.Internal)).use(_ => Applicative[F].unit)
   }
 
-  override def run(args: List[String]): IO[ExitCode] = (for {
+  override def run(args: List[String]): Resource[IO, Unit] = for {
     ep <- entryPoint[IO]
     _ <- app[IO](ep).compile.drain.background
-  } yield ExitCode.Success).useForever
+  } yield ()
 }

@@ -8,7 +8,7 @@ package io.janstenpickle.trace4cats.example
 import cats.data.Kleisli
 import cats.effect.kernel.{Async, Resource, Temporal}
 import cats.effect.std.Random
-import cats.effect.{ExitCode, IO, IOApp}
+import cats.effect.{IO, IOApp}
 import cats.instances.int._
 import cats.syntax.applicative._
 import cats.syntax.apply._
@@ -32,7 +32,7 @@ import scala.concurrent.duration._
   *
   * This example demonstrates how to use Natchez to implicitly pass spans around the callstack.
   */
-object NatchezExample extends IOApp {
+object NatchezExample extends IOApp.Simple {
   def entryPoint[F[_]: Async](process: TraceProcess): Resource[F, EntryPoint[F]] =
     AvroSpanCompleter.udp[F](process, config = CompleterConfig(batchTimeout = 50.millis)).map { completer =>
       Trace4CatsTracer.entryPoint[F](SpanSampler.probabilistic[F](0.05), completer)
@@ -65,7 +65,7 @@ object NatchezExample extends IOApp {
       } yield ()
     }
 
-  override def run(args: List[String]): IO[ExitCode] =
+  override def run: IO[Unit] =
     entryPoint[IO](TraceProcess("natchez"))
       .use { ep =>
         ep.root("this is the root span").use { span =>
@@ -73,5 +73,4 @@ object NatchezExample extends IOApp {
           runF[Kleisli[IO, NatchezSpan[IO], *]].run(span)
         }
       }
-      .as(ExitCode.Success)
 }

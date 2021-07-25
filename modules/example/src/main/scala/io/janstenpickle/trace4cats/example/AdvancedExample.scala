@@ -1,6 +1,6 @@
 package io.janstenpickle.trace4cats.example
 
-import cats.effect.{ExitCode, IO, IOApp}
+import cats.effect.{IO, IOApp}
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus, TraceProcess}
 import io.janstenpickle.trace4cats.rate.sampling.RateSpanSampler
@@ -13,8 +13,8 @@ import scala.concurrent.duration._
   * span resources are flatmapped rather than the `use` method being called - this has essentially the effect
   * as the simple example call tree.
   */
-object AdvancedExample extends IOApp {
-  override def run(args: List[String]): IO[ExitCode] = Slf4jLogger.create[IO].flatMap { implicit logger: Logger[IO] =>
+object AdvancedExample extends IOApp.Simple {
+  override def run: IO[Unit] = Slf4jLogger.create[IO].flatMap { implicit logger: Logger[IO] =>
     (for {
       completer <- AllCompleters[IO](TraceProcess("test"))
 
@@ -24,6 +24,6 @@ object AdvancedExample extends IOApp {
       // as shown in the simple example, Spans are `cats.effect.Resource`s so may be flatMapped with others
       root <- Span.root[IO]("root", SpanKind.Client, rateSampler, completer)
       child <- root.child("child", SpanKind.Server)
-    } yield child).use(_.setStatus(SpanStatus.Internal("Error"))).as(ExitCode.Success)
+    } yield child).use(_.setStatus(SpanStatus.Internal("Error")))
   }
 }

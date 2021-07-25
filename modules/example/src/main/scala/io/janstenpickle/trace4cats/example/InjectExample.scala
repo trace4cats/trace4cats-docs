@@ -8,7 +8,7 @@ package io.janstenpickle.trace4cats.example
 import cats.data.Kleisli
 import cats.effect.kernel.{Async, Temporal}
 import cats.effect.std.Random
-import cats.effect.{ExitCode, IO, IOApp, Resource}
+import cats.effect.{IO, IOApp, Resource}
 import cats.instances.int._
 import cats.syntax.applicative._
 import cats.syntax.apply._
@@ -32,7 +32,7 @@ import scala.concurrent.duration._
   *
   * This example demonstrates how to use Trace4Cats inject to implicitly pass spans around the callstack.
   */
-object InjectExample extends IOApp {
+object InjectExample extends IOApp.Simple {
   def entryPoint[F[_]: Async](process: TraceProcess): Resource[F, EntryPoint[F]] =
     AvroSpanCompleter.udp[F](process, config = CompleterConfig(batchTimeout = 50.millis)).map { completer =>
       EntryPoint[F](SpanSampler.probabilistic[F](0.05), completer)
@@ -65,7 +65,7 @@ object InjectExample extends IOApp {
       } yield ()
     }
 
-  override def run(args: List[String]): IO[ExitCode] =
+  override def run: IO[Unit] =
     entryPoint[IO](TraceProcess("trace4cats"))
       .use { ep =>
         ep.root("this is the root span").use { span =>
@@ -73,5 +73,4 @@ object InjectExample extends IOApp {
           runF[Kleisli[IO, Span[IO], *]].run(span)
         }
       }
-      .as(ExitCode.Success)
 }
