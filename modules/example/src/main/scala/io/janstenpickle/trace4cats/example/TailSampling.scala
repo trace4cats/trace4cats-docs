@@ -1,7 +1,7 @@
 package io.janstenpickle.trace4cats.example
 
 import cats.data.NonEmptySet
-import cats.effect.{ExitCode, IO, IOApp, Resource}
+import cats.effect.{IO, IOApp, Resource}
 import cats.syntax.semigroup._
 import fs2.Chunk
 import org.typelevel.log4cats.Logger
@@ -17,8 +17,8 @@ import io.janstenpickle.trace4cats.sampling.tail.{TailSamplingSpanExporter, Tail
 
 import scala.concurrent.duration._
 
-object TailSampling extends IOApp {
-  override def run(args: List[String]): IO[ExitCode] = Slf4jLogger.create[IO].flatMap { implicit logger: Logger[IO] =>
+object TailSampling extends IOApp.Simple {
+  override def run: IO[Unit] = Slf4jLogger.create[IO].flatMap { implicit logger: Logger[IO] =>
     (for {
       exporter <- AvroSpanExporter.udp[IO, Chunk]()
 
@@ -43,6 +43,6 @@ object TailSampling extends IOApp {
 
       root <- Span.root[IO]("root", SpanKind.Client, SpanSampler.always, completer)
       child <- root.child("child", SpanKind.Server)
-    } yield child).use(_.setStatus(SpanStatus.Internal("Error"))).as(ExitCode.Success)
+    } yield child).use(_.setStatus(SpanStatus.Internal("Error")))
   }
 }

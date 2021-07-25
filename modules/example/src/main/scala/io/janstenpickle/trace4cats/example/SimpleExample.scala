@@ -1,6 +1,6 @@
 package io.janstenpickle.trace4cats.example
 
-import cats.effect.{ExitCode, IO, IOApp}
+import cats.effect.{IO, IOApp}
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.avro.AvroSpanCompleter
 import io.janstenpickle.trace4cats.kernel.SpanSampler
@@ -14,8 +14,8 @@ import scala.concurrent.duration._
   * Note how spans are surfaced as instances of `cats.effect.Resource` so may be flatMapped, however in this
   * example the `use` method is called explicitly
   */
-object SimpleExample extends IOApp {
-  override def run(args: List[String]): IO[ExitCode] =
+object SimpleExample extends IOApp.Simple {
+  override def run: IO[Unit] =
     AvroSpanCompleter
       .udp[IO](TraceProcess("test"), config = CompleterConfig(batchTimeout = 50.millis))
       .use { completer =>
@@ -32,9 +32,8 @@ object SimpleExample extends IOApp {
                 _ <- child.put("bool-attribute", true)
                 _ <- child.put("double-attribute", 23.0)
                 _ <- child.setStatus(SpanStatus.Internal("Some error message"))
-              } yield ExitCode.Success
+              } yield ()
           }
         }
-
       }
 }

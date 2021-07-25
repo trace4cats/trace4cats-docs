@@ -3,7 +3,7 @@ package io.janstenpickle.trace4cats.example
 import cats.data.Kleisli
 import cats.effect.kernel.{Async, Clock, Resource, Temporal}
 import cats.effect.std.{Console, Random}
-import cats.effect.{ExitCode, IO, IOApp, MonadCancelThrow}
+import cats.effect.{IO, IOApp, MonadCancelThrow}
 import cats.implicits._
 import cats.{Applicative, Apply, Functor, Monad, Order, Parallel}
 import fs2.Stream
@@ -20,7 +20,7 @@ import io.janstenpickle.trace4cats.model.{SpanKind, TraceHeaders, TraceProcess}
 
 import scala.concurrent.duration._
 
-object Fs2AdvancedExample extends IOApp {
+object Fs2AdvancedExample extends IOApp.Simple {
 
   def entryPoint[F[_]: Async](process: TraceProcess): Resource[F, EntryPoint[F]] =
     AvroSpanCompleter.udp[F](process, config = CompleterConfig(batchTimeout = 50.millis)).map { completer =>
@@ -101,7 +101,7 @@ object Fs2AdvancedExample extends IOApp {
         Trace[G].span("child span in new service", SpanKind.Consumer)(Applicative[G].unit)
       }
 
-  override def run(args: List[String]): IO[ExitCode] =
+  override def run: IO[Unit] =
     entryPoint[IO](TraceProcess("trace4catsFS2"))
       .use { ep =>
         implicit val random: Random[Kleisli[IO, Span[IO], *]] = Random.javaUtilConcurrentThreadLocalRandom
@@ -124,5 +124,4 @@ object Fs2AdvancedExample extends IOApp {
 
         continuedStream.endTrace[IO].compile.drain
       }
-      .as(ExitCode.Success)
 }

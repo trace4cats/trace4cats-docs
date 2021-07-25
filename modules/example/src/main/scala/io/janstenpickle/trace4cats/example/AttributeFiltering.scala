@@ -1,7 +1,7 @@
 package io.janstenpickle.trace4cats.example
 
 import cats.data.{NonEmptyMap, NonEmptySet}
-import cats.effect.{ExitCode, IO, IOApp}
+import cats.effect.{IO, IOApp}
 import cats.syntax.semigroup._
 import fs2.Chunk
 import io.janstenpickle.trace4cats.Span
@@ -14,8 +14,8 @@ import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus, TraceProcess}
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
-object AttributeFiltering extends IOApp {
-  override def run(args: List[String]): IO[ExitCode] = Slf4jLogger.create[IO].flatMap { implicit logger: Logger[IO] =>
+object AttributeFiltering extends IOApp.Simple {
+  override def run: IO[Unit] = Slf4jLogger.create[IO].flatMap { implicit logger: Logger[IO] =>
     (for {
       exporter <- AvroSpanExporter.udp[IO, Chunk]()
 
@@ -32,6 +32,6 @@ object AttributeFiltering extends IOApp {
 
       root <- Span.root[IO]("root", SpanKind.Client, SpanSampler.always, completer)
       child <- root.child("child", SpanKind.Server)
-    } yield child).use(_.setStatus(SpanStatus.Internal("Error"))).as(ExitCode.Success)
+    } yield child).use(_.setStatus(SpanStatus.Internal("Error")))
   }
 }

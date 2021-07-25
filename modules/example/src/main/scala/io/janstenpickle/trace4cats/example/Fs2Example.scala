@@ -1,7 +1,7 @@
 package io.janstenpickle.trace4cats.example
 
 import cats.data.Kleisli
-import cats.effect.{ExitCode, IO, IOApp, MonadCancelThrow}
+import cats.effect.{IO, IOApp, MonadCancelThrow}
 import cats.effect.kernel.{Async, Clock, Resource, Temporal}
 import cats.effect.std.{Console, Random}
 import cats.implicits._
@@ -19,7 +19,7 @@ import io.janstenpickle.trace4cats.model.{SpanKind, TraceHeaders, TraceProcess}
 
 import scala.concurrent.duration._
 
-object Fs2Example extends IOApp {
+object Fs2Example extends IOApp.Simple {
 
   def entryPoint[F[_]: Async](process: TraceProcess): Resource[F, EntryPoint[F]] =
     AvroSpanCompleter.udp[F](process, config = CompleterConfig(batchTimeout = 50.millis)).map { completer =>
@@ -97,7 +97,7 @@ object Fs2Example extends IOApp {
         Applicative[F].unit
       }
 
-  override def run(args: List[String]): IO[ExitCode] =
+  override def run: IO[Unit] =
     entryPoint[IO](TraceProcess("trace4catsFS2"))
       .use { ep =>
         // inject the entry point into an infinite stream, do some work,
@@ -114,5 +114,4 @@ object Fs2Example extends IOApp {
 
         continuedStream.run.compile.drain
       }
-      .as(ExitCode.Success)
 }

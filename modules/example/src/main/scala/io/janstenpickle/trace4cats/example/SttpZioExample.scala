@@ -23,8 +23,7 @@ object SttpZioExample extends CatsApp {
           client <- BlazeClientBuilder[F](rt.platform.executor.asEC).resource
           sttpBackend = Http4sBackend.usingClient(client)
           tracedBackend = sttpBackend.liftTrace[G]()
-        } yield tracedBackend)
-          .use(_ => ZIO.never)
+        } yield tracedBackend).use_
       }
       .exitCode
   }
