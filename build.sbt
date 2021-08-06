@@ -1,3 +1,5 @@
+import sbt.util
+
 lazy val commonSettings = Seq(
   Compile / compile / javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
   libraryDependencies ++= {

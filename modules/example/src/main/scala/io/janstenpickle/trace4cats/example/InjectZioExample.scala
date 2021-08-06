@@ -18,7 +18,7 @@ import cats.{Monad, Order, Parallel}
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.`export`.CompleterConfig
 import io.janstenpickle.trace4cats.avro.AvroSpanCompleter
-import io.janstenpickle.trace4cats.base.context.Local
+import io.janstenpickle.trace4cats.base.context.Provide
 import io.janstenpickle.trace4cats.inject.zio._
 import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
 import io.janstenpickle.trace4cats.kernel.SpanSampler
@@ -73,11 +73,11 @@ object InjectZioExample extends CatsApp {
     type F[x] = RIO[ZEnv, x]
     type G[x] = RIO[ZEnv with Has[Span[F]], x]
     implicit val random: Random[G] = Random.javaUtilConcurrentThreadLocalRandom[G]
-    implicit val spanLocal: Local[G, Span[F]] = zioProvideSome
+    implicit val spanProvide: Provide[F, G, Span[F]] = zioProvideSome
 
     entryPoint[F](TraceProcess("trace4cats")).use { ep =>
-      ep.root("this is the root span").use { span =>
-        runF[G].provideSomeLayer[ZEnv](ZLayer.succeed(span))
+      ep.root("this is the root span").use {
+        spanProvide.provide(runF[G])
       }
     }.exitCode
   }

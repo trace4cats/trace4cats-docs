@@ -1,5 +1,7 @@
 package io.janstenpickle.trace4cats.example
 
+import cats.effect.kernel.Concurrent
+import cats.syntax.flatMap._
 import io.janstenpickle.trace4cats.Span
 import io.janstenpickle.trace4cats.base.context.Provide
 import io.janstenpickle.trace4cats.example.Fs2Example.entryPoint
@@ -18,11 +20,9 @@ import zio._
 import zio.interop.catz._
 
 object Http4sZioExample extends CatsApp {
-  type F[x] = RIO[ZEnv, x]
-  type G[x] = RIO[ZEnv with Has[Span[F]], x]
 
-  def makeRoutes(client: Client[G]): HttpRoutes[G] = {
-    object dsl extends Http4sDsl[G]
+  def makeRoutes[F[_]: Concurrent](client: Client[F]): HttpRoutes[F] = {
+    object dsl extends Http4sDsl[F]
     import dsl._
 
     HttpRoutes.of { case req @ GET -> Root / "forward" =>
@@ -30,7 +30,10 @@ object Http4sZioExample extends CatsApp {
     }
   }
 
-  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
+  override def run(args: List[String]): URIO[ZEnv, ExitCode] = {
+    type F[x] = RIO[ZEnv, x]
+    type G[x] = RIO[ZEnv with Has[Span[F]], x]
+
     implicit val spanProvide: Provide[F, G, Span[F]] = zioProvideSome
     ZIO
       .runtime[ZEnv]
