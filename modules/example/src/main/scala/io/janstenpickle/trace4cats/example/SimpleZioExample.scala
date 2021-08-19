@@ -13,8 +13,8 @@ import scala.concurrent.duration._
 
 /** This example shows how to send traces to the Avro Agent.
   *
-  * Note how spans are surfaced as instances of `cats.effect.Resource` so may be flatMapped, however in this
-  * example the `use` method is called explicitly
+  * Note how spans are surfaced as instances of `cats.effect.Resource` so may be flatMapped, however in this example the
+  * `use` method is called explicitly
   */
 object SimpleZioExample extends CatsApp {
 

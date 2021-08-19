@@ -9,9 +9,9 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.concurrent.duration._
 
-/** This example is similar the to the simple exmample, however multiple completers are used in parallel and
-  * span resources are flatmapped rather than the `use` method being called - this has essentially the effect
-  * as the simple example call tree.
+/** This example is similar the to the simple exmample, however multiple completers are used in parallel and span
+  * resources are flatmapped rather than the `use` method being called - this has essentially the effect as the simple
+  * example call tree.
   */
 object AdvancedExample extends IOApp.Simple {
   override def run: IO[Unit] = Slf4jLogger.create[IO].flatMap { implicit logger: Logger[IO] =>
