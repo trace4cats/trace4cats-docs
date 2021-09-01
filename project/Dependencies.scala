@@ -23,7 +23,7 @@ object Dependencies {
 
     val catsEffect = "3.2.5"
     val http4s = "0.23.1"
-    val sttpClient3 = "3.3.13"
+    val sttpClient3 = "3.3.14"
 
     val kindProjector = "0.13.1"
     val betterMonadicFor = "0.3.1"
