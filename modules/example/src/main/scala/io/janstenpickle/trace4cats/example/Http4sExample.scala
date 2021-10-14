@@ -29,18 +29,16 @@ object Http4sExample extends ResourceApp.Forever {
 
   override def run(args: List[String]): Resource[IO, Unit] = {
     type F[x] = IO[x]
-    val F: IO.type = IO
     type G[x] = Kleisli[F, Span[F], x]
 
     for {
       ep <- entryPoint[F](TraceProcess("trace4catsHttp4s"))
-      ec <- Resource.eval(F.executionContext)
-      client <- BlazeClientBuilder[F](ec).resource
+      client <- BlazeClientBuilder[F].resource
 
       routes = makeRoutes[G](client.liftTrace()) // use implicit syntax to lift http client to the trace context
 
       _ <-
-        BlazeServerBuilder[F](ec)
+        BlazeServerBuilder[F]
           .bindHttp(8080, "0.0.0.0")
           .withHttpApp(
             routes.inject(ep, requestFilter = Http4sRequestFilter.kubernetesPrometheus).orNotFound

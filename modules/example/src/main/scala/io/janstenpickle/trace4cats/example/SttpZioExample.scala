@@ -16,15 +16,10 @@ object SttpZioExample extends CatsApp {
     type G[x] = RIO[ZEnv with Has[Span[F]], x]
     implicit val spanProvide: Provide[F, G, Span[F]] = zioProvideSome
 
-    ZIO
-      .runtime[ZEnv]
-      .flatMap { rt =>
-        (for {
-          client <- BlazeClientBuilder[F](rt.platform.executor.asEC).resource
-          sttpBackend = Http4sBackend.usingClient(client)
-          tracedBackend = sttpBackend.liftTrace[G]()
-        } yield tracedBackend).use_
-      }
-      .exitCode
+    (for {
+      client <- BlazeClientBuilder[F].resource
+      sttpBackend = Http4sBackend.usingClient(client)
+      tracedBackend = sttpBackend.liftTrace[G]()
+    } yield tracedBackend).use_.exitCode
   }
 }

@@ -35,27 +35,20 @@ object Http4sZioExample extends CatsApp {
     type G[x] = RIO[ZEnv with Has[Span[F]], x]
 
     implicit val spanProvide: Provide[F, G, Span[F]] = zioProvideSome
-    ZIO
-      .runtime[ZEnv]
-      .flatMap { rt =>
-        val ec = rt.platform.executor.asEC
-        (for {
+    (for {
+      ep <- entryPoint[F](TraceProcess("trace4catsHttp4s"))
 
-          ep <- entryPoint[F](TraceProcess("trace4catsHttp4s"))
+      client <- BlazeClientBuilder[F].resource
 
-          client <- BlazeClientBuilder[F](ec).resource
+      routes = makeRoutes(client.liftTrace[G]()) // use implicit syntax to lift http client to the trace context
 
-          routes = makeRoutes(client.liftTrace[G]()) // use implicit syntax to lift http client to the trace context
-
-          _ <-
-            BlazeServerBuilder[F](ec)
-              .bindHttp(8080, "0.0.0.0")
-              .withHttpApp(
-                routes.inject(ep, requestFilter = Http4sRequestFilter.kubernetesPrometheus).orNotFound
-              ) // use implicit syntax to inject an entry point to http routes
-              .resource
-        } yield ()).useForever
-      }
-      .exitCode
+      _ <-
+        BlazeServerBuilder[F]
+          .bindHttp(8080, "0.0.0.0")
+          .withHttpApp(
+            routes.inject(ep, requestFilter = Http4sRequestFilter.kubernetesPrometheus).orNotFound
+          ) // use implicit syntax to inject an entry point to http routes
+          .resource
+    } yield ()).useForever.exitCode
   }
 }
