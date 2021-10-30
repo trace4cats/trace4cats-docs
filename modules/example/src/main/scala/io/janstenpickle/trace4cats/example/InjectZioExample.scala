@@ -36,7 +36,7 @@ import scala.concurrent.duration._
   * This example demonstrates how to use Trace4Cats inject to implicitly pass spans around the callstack.
   */
 object InjectZioExample extends CatsApp {
-  //implicit val rioTimer: Timer[SpannedRIO] = Timer[Task].mapK(λ[Task ~> SpannedRIO](t => t))
+  // implicit val rioTimer: Timer[SpannedRIO] = Timer[Task].mapK(λ[Task ~> SpannedRIO](t => t))
 
   def entryPoint[F[_]: Async](process: TraceProcess): Resource[F, EntryPoint[F]] =
     AvroSpanCompleter.udp[F](process, config = CompleterConfig(batchTimeout = 50.millis)).map { completer =>
