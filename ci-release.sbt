@@ -4,8 +4,7 @@ ThisBuild / crossScalaVersions := Seq(
   Dependencies.Versions.scala212,
   Dependencies.Versions.scala3
 )
-ThisBuild / githubWorkflowEnv += ("JABBA_INDEX" -> "https://github.com/typelevel/jdk-index/raw/main/index.json")
-ThisBuild / githubWorkflowJavaVersions := Seq("adoptium@8", "adoptium@17")
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("17"))
 
 ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Sbt(
   List("scalafmtCheckAll", "scalafmtSbtCheck"),
