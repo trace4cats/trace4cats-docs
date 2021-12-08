@@ -22,7 +22,7 @@ object Dependencies {
     val trace4catsZipkin = "0.12.0"
 
     val catsEffect = "3.3.0"
-    val http4s = "0.23.6"
+    val http4s = "0.23.7"
     val sttpClient3 = "3.3.18"
 
     val kindProjector = "0.13.2"
