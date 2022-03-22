@@ -9,6 +9,7 @@ import io.janstenpickle.trace4cats.kernel.SpanSampler
 import io.janstenpickle.trace4cats.log.LogSpanCompleter
 import io.janstenpickle.trace4cats.model.{SpanKind, TraceProcess}
 import io.janstenpickle.trace4cats.sampling.dynamic.http.HttpDynamicSpanSampler
+import org.http4s.blaze.server.BlazeServerBuilder
 
 import scala.concurrent.duration._
 
@@ -20,7 +21,10 @@ object DynamicSampling extends ResourceApp.Forever {
   // "curl -XPOST http:///localhost:8080/trace4cats/killswitch" to disable tracing (sets "never" sampler)
   // configure rate based sampling like so: "curl -XPOST -d '{"samplerType": "Rate", "bucketSize": 10, "tokenRate": 2.0 }' http:///localhost:8080/trace4cats/config"
   // or probability sampling: "curl -XPOST -d '{"samplerType": "Probabilistic", "probability": 0.5 }' http:///localhost:8080/trace4cats/config"
-  def sampler[F[_]: Async]: Resource[F, SpanSampler[F]] = HttpDynamicSpanSampler.create[F]()
+  def sampler[F[_]: Async]: Resource[F, SpanSampler[F]] = {
+    val builder = BlazeServerBuilder[F].bindHttp(port = 8080, host = "0.0.0.0")
+    HttpDynamicSpanSampler.build[F](builder.withHttpApp)
+  }
 
   def entryPoint[F[_]: Async]: Resource[F, EntryPoint[F]] =
     for {
