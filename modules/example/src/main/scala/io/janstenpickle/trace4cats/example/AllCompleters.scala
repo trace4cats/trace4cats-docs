@@ -16,6 +16,7 @@ import io.janstenpickle.trace4cats.opentelemetry.otlp.{
   OpenTelemetryOtlpHttpSpanCompleter
 }
 import io.janstenpickle.trace4cats.stackdriver.{StackdriverGrpcSpanCompleter, StackdriverHttpSpanCompleter}
+import org.http4s.blaze.client.BlazeClientBuilder
 import org.typelevel.log4cats.Logger
 
 /** This example shows how many different completers may be combined into a single completer using the provided monoid
@@ -26,16 +27,17 @@ import org.typelevel.log4cats.Logger
   */
 object AllCompleters {
   def apply[F[_]: Async: Parallel: Logger](process: TraceProcess): Resource[F, SpanCompleter[F]] =
-    List(
-      AvroSpanCompleter.udp[F](process),
-      JaegerSpanCompleter[F](process),
-      OpenTelemetryJaegerSpanCompleter[F](process),
-      OpenTelemetryOtlpGrpcSpanCompleter[F](process),
-      OpenTelemetryOtlpHttpSpanCompleter.blazeClient[F](process),
-      StackdriverGrpcSpanCompleter[F](process, "gcp-project-id-123"),
-      StackdriverHttpSpanCompleter.blazeClient[F](process)
-    ).parSequence.map { completers =>
-      (LogSpanCompleter[F](process) :: completers).combineAll
+    BlazeClientBuilder[F].resource.flatMap { blazeClient =>
+      List(
+        AvroSpanCompleter.udp[F](process),
+        JaegerSpanCompleter[F](process),
+        OpenTelemetryJaegerSpanCompleter[F](process),
+        OpenTelemetryOtlpGrpcSpanCompleter[F](process),
+        OpenTelemetryOtlpHttpSpanCompleter[F](blazeClient, process),
+        StackdriverGrpcSpanCompleter[F](process, "gcp-project-id-123"),
+        StackdriverHttpSpanCompleter[F](process, blazeClient)
+      ).parSequence.map { completers =>
+        (LogSpanCompleter[F](process) :: completers).combineAll
+      }
     }
-
 }
