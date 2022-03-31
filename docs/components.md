@@ -31,7 +31,7 @@ application. Forwards batches of spans onto the Collector over TCP.
 To see the command line options:
 
 ```bash
-docker run -it janstenpickle/trace4cats-agent:0.13.0
+docker run -it janstenpickle/trace4cats-agent:0.13.1
 ```
 
 Run in background:
@@ -39,7 +39,7 @@ Run in background:
 ```bash
 docker run -p7777:7777/udp -d --rm \
   --name trace4cats-agent \
-  janstenpickle/janstenpickle/trace4cats-agent:0.13.0
+  janstenpickle/janstenpickle/trace4cats-agent:0.13.1
 ```
 
 ### Agent Kafka
@@ -52,7 +52,7 @@ application. Forwards batches of spans onto a supplied Kafka topic.
 To see the command line options:
 
 ```bash
-docker run -it janstenpickle/trace4cats-agent-kafka:0.13.0
+docker run -it janstenpickle/trace4cats-agent-kafka:0.13.1
 ```
 
 Run in background:
@@ -60,7 +60,7 @@ Run in background:
 ```bash
 docker run -p7777:7777/udp -d --rm \
   --name trace4cats-agent \
-  janstenpickle/janstenpickle/trace4cats-agent-kafka:0.13.0
+  janstenpickle/janstenpickle/trace4cats-agent-kafka:0.13.1
 ```
 
 ## Collectors
@@ -200,7 +200,7 @@ new-relic:
 docker run -p7777:7777 -p7777:7777/udp -d --rm \
   --name trace4cats-collector \
   -v /path/to/your/collector-config.yaml:/tmp/collector.yaml \
-  janstenpickle/trace4cats-collector:0.13.0 --config-file=/tmp/collector.yaml
+  janstenpickle/trace4cats-collector:0.13.1 --config-file=/tmp/collector.yaml
 ```
 
 
@@ -318,7 +318,7 @@ new-relic:
 docker run -p7777:7777 -p7777:7777/udp -d --rm \
   --name trace4cats-collector-lite \
   -v /path/to/your/collector-config.yaml:/tmp/collector.yaml \
-  janstenpickle/trace4cats-collector-lite:0.13.0 --config-file=/tmp/collector.yaml
+  janstenpickle/trace4cats-collector-lite:0.13.1 --config-file=/tmp/collector.yaml
 ```
 
 
