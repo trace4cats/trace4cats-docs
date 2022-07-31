@@ -32,6 +32,7 @@ dependencies:
 | `trace4cats-core`            | `trace4cats-kernel`             |
 | `trace4cats-model`           | `trace4cats-kernel`             |
 | `trace4cats-exporter-common` | `trace4cats-core`               |
+| `trace4cats-log-exporter`    | `trace4cats-core`               |
 | `trace4cats-inject`          | `trace4cats-core`               |
 | `trace4cats-base`            | `trace4cats-context-utils`      |
 | `trace4cats-base-laws`       | `trace4cats-context-utils-laws` |
