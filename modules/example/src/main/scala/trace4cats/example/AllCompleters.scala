@@ -1,23 +1,19 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.Parallel
 import cats.effect.kernel.{Async, Resource}
 import cats.instances.list._
 import cats.syntax.foldable._
 import cats.syntax.parallel._
-import io.janstenpickle.trace4cats.avro.AvroSpanCompleter
-import io.janstenpickle.trace4cats.jaeger.JaegerSpanCompleter
-import io.janstenpickle.trace4cats.kernel.SpanCompleter
-import io.janstenpickle.trace4cats.log.LogSpanCompleter
-import io.janstenpickle.trace4cats.model.TraceProcess
-import io.janstenpickle.trace4cats.opentelemetry.jaeger.OpenTelemetryJaegerSpanCompleter
-import io.janstenpickle.trace4cats.opentelemetry.otlp.{
-  OpenTelemetryOtlpGrpcSpanCompleter,
-  OpenTelemetryOtlpHttpSpanCompleter
-}
-import io.janstenpickle.trace4cats.stackdriver.{StackdriverGrpcSpanCompleter, StackdriverHttpSpanCompleter}
 import org.http4s.blaze.client.BlazeClientBuilder
 import org.typelevel.log4cats.Logger
+import trace4cats.avro.AvroSpanCompleter
+import trace4cats.jaeger.JaegerSpanCompleter
+import trace4cats.log.LogSpanCompleter
+import trace4cats.opentelemetry.jaeger.OpenTelemetryJaegerSpanCompleter
+import trace4cats.opentelemetry.otlp.{OpenTelemetryOtlpGrpcSpanCompleter, OpenTelemetryOtlpHttpSpanCompleter}
+import trace4cats.stackdriver.{StackdriverGrpcSpanCompleter, StackdriverHttpSpanCompleter}
+import trace4cats.{SpanCompleter, TraceProcess}
 
 /** This example shows how many different completers may be combined into a single completer using the provided monoid
   * instance.

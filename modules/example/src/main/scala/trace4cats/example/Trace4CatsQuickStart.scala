@@ -1,16 +1,13 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.Monad
 import cats.data.Kleisli
-import cats.effect._
+import cats.effect.kernel.Resource
 import cats.effect.std.Console
+import cats.effect.{Async, IO, IOApp}
 import cats.implicits._
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.`export`.CompleterConfig
-import io.janstenpickle.trace4cats.avro.AvroSpanCompleter
-import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
-import io.janstenpickle.trace4cats.kernel.SpanSampler
-import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus, TraceProcess}
+import trace4cats._
+import trace4cats.avro.AvroSpanCompleter
 
 import scala.concurrent.duration._
 

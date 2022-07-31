@@ -3,10 +3,13 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
-import cats.effect.kernel.{Async, Resource, Temporal}
+import _root_.natchez.{Trace => NatchezTrace}
+import cats.data.Kleisli
+import cats.effect.kernel.{Async, Temporal}
 import cats.effect.std.Random
+import cats.effect.{IO, IOApp, Resource}
 import cats.instances.int._
 import cats.syntax.applicative._
 import cats.syntax.apply._
@@ -15,18 +18,9 @@ import cats.syntax.functor._
 import cats.syntax.parallel._
 import cats.syntax.partialOrder._
 import cats.{Monad, Order, Parallel}
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.`export`.CompleterConfig
-import io.janstenpickle.trace4cats.avro.AvroSpanCompleter
-import io.janstenpickle.trace4cats.base.context.Provide
-import io.janstenpickle.trace4cats.inject.zio._
-import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
-import io.janstenpickle.trace4cats.kernel.SpanSampler
-import io.janstenpickle.trace4cats.model.TraceProcess
-import io.janstenpickle.trace4cats.natchez.conversions.toNatchez._
-import natchez.{Trace => NatchezTrace}
-import zio.interop.catz._
-import zio._
+import trace4cats._
+import trace4cats.avro.AvroSpanCompleter
+import trace4cats.natchez.conversions.toNatchez._
 
 import scala.concurrent.duration._
 
@@ -35,9 +29,7 @@ import scala.concurrent.duration._
   *
   * This example demonstrates how to use Trace4Cats inject to implicitly pass spans around the callstack.
   */
-object InjectZioExample extends CatsApp {
-  // implicit val rioTimer: Timer[SpannedRIO] = Timer[Task].mapK(λ[Task ~> SpannedRIO](t => t))
-
+object InjectExample extends IOApp.Simple {
   def entryPoint[F[_]: Async](process: TraceProcess): Resource[F, EntryPoint[F]] =
     AvroSpanCompleter.udp[F](process, config = CompleterConfig(batchTimeout = 50.millis)).map { completer =>
       EntryPoint[F](SpanSampler.probabilistic[F](0.05), completer)
@@ -70,16 +62,12 @@ object InjectZioExample extends CatsApp {
       } yield ()
     }
 
-  override def run(args: List[String]): URIO[ZEnv, ExitCode] = {
-    type F[x] = RIO[ZEnv, x]
-    type G[x] = RIO[ZEnv with Has[Span[F]], x]
-    implicit val random: Random[G] = Random.javaUtilConcurrentThreadLocalRandom[G]
-    implicit val spanProvide: Provide[F, G, Span[F]] = zioProvideSome
-
-    entryPoint[F](TraceProcess("trace4cats")).use { ep =>
-      ep.root("this is the root span").use {
-        spanProvide.provide(runF[G])
+  override def run: IO[Unit] =
+    entryPoint[IO](TraceProcess("trace4cats"))
+      .use { ep =>
+        ep.root("this is the root span").use { span =>
+          implicit val random: Random[Kleisli[IO, Span[IO], *]] = Random.javaUtilConcurrentThreadLocalRandom
+          runF[Kleisli[IO, Span[IO], *]].run(span)
+        }
       }
-    }.exitCode
-  }
 }

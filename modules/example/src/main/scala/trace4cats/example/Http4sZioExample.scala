@@ -1,21 +1,20 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.effect.kernel.Concurrent
 import cats.syntax.flatMap._
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.base.context.Provide
-import io.janstenpickle.trace4cats.example.Fs2Example.entryPoint
-import io.janstenpickle.trace4cats.http4s.client.syntax._
-import io.janstenpickle.trace4cats.http4s.common.Http4sRequestFilter
-import io.janstenpickle.trace4cats.http4s.server.syntax._
-import io.janstenpickle.trace4cats.inject.zio._
-import io.janstenpickle.trace4cats.model.TraceProcess
 import org.http4s.HttpRoutes
-import org.http4s.client.Client
 import org.http4s.blaze.client.BlazeClientBuilder
+import org.http4s.blaze.server.BlazeServerBuilder
+import org.http4s.client.Client
 import org.http4s.dsl.Http4sDsl
 import org.http4s.implicits._
-import org.http4s.blaze.server.BlazeServerBuilder
+import trace4cats._
+import trace4cats.context.Provide
+import trace4cats.context.zio.instances._
+import trace4cats.example.Fs2Example.entryPoint
+import trace4cats.http4s.client.syntax._
+import trace4cats.http4s.common.Http4sRequestFilter
+import trace4cats.http4s.server.syntax._
 import zio._
 import zio.interop.catz._
 

@@ -27,14 +27,17 @@ To simplify the dependency tree some Trace4Cats libraries have been merged or re
 but just in case it doesn't work or you're performing a manual migration you can use the table below to update your
 dependencies:
 
-| Old Module                   | Renamed/Consolidated Module     |
-|------------------------------|---------------------------------|
-| `trace4cats-core`            | `trace4cats-kernel`             |
-| `trace4cats-model`           | `trace4cats-kernel`             |
-| `trace4cats-exporter-common` | `trace4cats-core`               |
-| `trace4cats-log-exporter`    | `trace4cats-core`               |
-| `trace4cats-inject`          | `trace4cats-core`               |
-| `trace4cats-base`            | `trace4cats-context-utils`      |
-| `trace4cats-base-laws`       | `trace4cats-context-utils-laws` |
+| Old Module                    | Renamed/Consolidated Module     |
+|-------------------------------|---------------------------------|
+| `trace4cats-core`             | `trace4cats-kernel`             |
+| `trace4cats-model`            | `trace4cats-kernel`             |
+| `trace4cats-exporter-common`  | `trace4cats-core`               |
+| `trace4cats-log-exporter`     | `trace4cats-core`               |
+| `trace4cats-inject`           | `trace4cats-core`               |
+| `trace4cats-rate-sampling`    | `trace4cats-core`               |
+| `trace4cats-dynamic-sampling` | `trace4cats-core`               |
+| `trace4cats-filtering`        | `trace4cats-core`               |
+| `trace4cats-base`             | `trace4cats-context-utils`      |
+| `trace4cats-base-laws`        | `trace4cats-context-utils-laws` |
 
 [Scala Steward]: https://github.com/scala-steward-org/scala-steward

@@ -1,9 +1,9 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.effect.{IO, IOApp}
-import io.janstenpickle.trace4cats.attributes.{EnvironmentAttributes, HostAttributes, SystemPropertyAttributes}
-import io.janstenpickle.trace4cats.model.AttributeValue.{LongValue, StringValue}
-import io.janstenpickle.trace4cats.model.TraceProcessBuilder
+import trace4cats._
+import trace4cats.attributes.{EnvironmentAttributes, HostAttributes, SystemPropertyAttributes}
+import trace4cats.model.AttributeValue.{LongValue, StringValue}
 
 object TraceProcessAttributes extends IOApp.Simple {
   override def run: IO[Unit] =

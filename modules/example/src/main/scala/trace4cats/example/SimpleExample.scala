@@ -1,11 +1,8 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.effect.{IO, IOApp}
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.avro.AvroSpanCompleter
-import io.janstenpickle.trace4cats.kernel.SpanSampler
-import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus, TraceProcess}
-import io.janstenpickle.trace4cats.`export`.CompleterConfig
+import trace4cats._
+import trace4cats.avro.AvroSpanCompleter
 
 import scala.concurrent.duration._
 

@@ -1,11 +1,11 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.base.context.Provide
-import io.janstenpickle.trace4cats.inject.zio._
-import io.janstenpickle.trace4cats.sttp.client3.syntax._
+import _root_.sttp.client3.http4s.Http4sBackend
 import org.http4s.blaze.client.BlazeClientBuilder
-import sttp.client3.http4s.Http4sBackend
+import trace4cats._
+import trace4cats.context.Provide
+import trace4cats.context.zio.instances._
+import trace4cats.sttp.client3.syntax._
 import zio._
 import zio.interop.catz._
 

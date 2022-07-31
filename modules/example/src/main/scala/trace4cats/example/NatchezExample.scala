@@ -3,12 +3,13 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
+import _root_.natchez.{EntryPoint, Span => NatchezSpan, Trace}
 import cats.data.Kleisli
-import cats.effect.kernel.{Async, Temporal}
+import cats.effect.kernel.{Async, Resource, Temporal}
 import cats.effect.std.Random
-import cats.effect.{IO, IOApp, Resource}
+import cats.effect.{IO, IOApp}
 import cats.instances.int._
 import cats.syntax.applicative._
 import cats.syntax.apply._
@@ -17,26 +18,22 @@ import cats.syntax.functor._
 import cats.syntax.parallel._
 import cats.syntax.partialOrder._
 import cats.{Monad, Order, Parallel}
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.`export`.CompleterConfig
-import io.janstenpickle.trace4cats.avro.AvroSpanCompleter
-import io.janstenpickle.trace4cats.inject.{EntryPoint, Trace}
-import io.janstenpickle.trace4cats.kernel.SpanSampler
-import io.janstenpickle.trace4cats.model.TraceProcess
-import io.janstenpickle.trace4cats.natchez.conversions.toNatchez._
-import natchez.{Trace => NatchezTrace}
+import trace4cats.avro.AvroSpanCompleter
+import trace4cats.natchez.Trace4CatsTracer
+import trace4cats.natchez.conversions.fromNatchez._
+import trace4cats.{Trace => T4CTrace, _}
 
 import scala.concurrent.duration._
 
 /** Adapted from
   * https://github.com/tpolecat/natchez/blob/b995b0ebf7b180666810f4edef46dce959596ace/modules/examples/src/main/scala/Example.scala
   *
-  * This example demonstrates how to use Trace4Cats inject to implicitly pass spans around the callstack.
+  * This example demonstrates how to use Natchez to implicitly pass spans around the callstack.
   */
-object InjectExample extends IOApp.Simple {
+object NatchezExample extends IOApp.Simple {
   def entryPoint[F[_]: Async](process: TraceProcess): Resource[F, EntryPoint[F]] =
     AvroSpanCompleter.udp[F](process, config = CompleterConfig(batchTimeout = 50.millis)).map { completer =>
-      EntryPoint[F](SpanSampler.probabilistic[F](0.05), completer)
+      Trace4CatsTracer.entryPoint[F](SpanSampler.probabilistic[F](0.05), completer)
     }
 
   // Intentionally slow parallel quicksort, to demonstrate branching. If we run too quickly it seems
@@ -53,9 +50,9 @@ object InjectExample extends IOApp.Simple {
       }
     }
 
-  // Demonstrate implicit conversion from Trace4Cats trace to Natchez
+  // Demonstrate implicit conversion from Natchez trace to Trace4Cats
   // use io.janstenpickle.trace4cats.natchez.conversions._ to do this
-  def convertedTrace[F[_]: NatchezTrace]: F[Unit] = NatchezTrace[F].put("attribute" -> "test")
+  def convertedTrace[F[_]: T4CTrace]: F[Unit] = T4CTrace[F].put("attribute", "test")
 
   def runF[F[_]: Temporal: Trace: Parallel: Random]: F[Unit] =
     Trace[F].span("Sort some stuff!") {
@@ -67,11 +64,11 @@ object InjectExample extends IOApp.Simple {
     }
 
   override def run: IO[Unit] =
-    entryPoint[IO](TraceProcess("trace4cats"))
+    entryPoint[IO](TraceProcess("natchez"))
       .use { ep =>
         ep.root("this is the root span").use { span =>
-          implicit val random: Random[Kleisli[IO, Span[IO], *]] = Random.javaUtilConcurrentThreadLocalRandom
-          runF[Kleisli[IO, Span[IO], *]].run(span)
+          implicit val random: Random[Kleisli[IO, NatchezSpan[IO], *]] = Random.javaUtilConcurrentThreadLocalRandom
+          runF[Kleisli[IO, NatchezSpan[IO], *]].run(span)
         }
       }
 }

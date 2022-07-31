@@ -1,18 +1,15 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.data.{NonEmptyMap, NonEmptySet}
 import cats.effect.{IO, IOApp}
 import cats.syntax.semigroup._
 import fs2.Chunk
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.`export`.{CompleterConfig, QueuedSpanCompleter}
-import io.janstenpickle.trace4cats.avro.AvroSpanExporter
-import io.janstenpickle.trace4cats.filtering.AttributeFilter._
-import io.janstenpickle.trace4cats.filtering.{AttributeFilter, AttributeFilteringExporter}
-import io.janstenpickle.trace4cats.kernel.SpanSampler
-import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus, TraceProcess}
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
+import trace4cats._
+import trace4cats.avro.AvroSpanExporter
+import trace4cats.filtering.AttributeFilter._
+import trace4cats.filtering.{AttributeFilter, AttributeFilteringExporter}
 
 object AttributeFiltering extends IOApp.Simple {
   override def run: IO[Unit] = Slf4jLogger.create[IO].flatMap { implicit logger: Logger[IO] =>

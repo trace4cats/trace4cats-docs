@@ -1,15 +1,13 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.Applicative
 import cats.effect.kernel.{Async, Resource, Temporal}
 import cats.effect.{IO, ResourceApp}
 import fs2.Stream
-import io.janstenpickle.trace4cats.inject.EntryPoint
-import io.janstenpickle.trace4cats.kernel.SpanSampler
-import io.janstenpickle.trace4cats.log.LogSpanCompleter
-import io.janstenpickle.trace4cats.model.{SpanKind, TraceProcess}
-import io.janstenpickle.trace4cats.sampling.dynamic.http.HttpDynamicSpanSampler
 import org.http4s.blaze.server.BlazeServerBuilder
+import trace4cats._
+import trace4cats.dynamic.http4s.HttpDynamicSpanSampler
+import trace4cats.log.LogSpanCompleter
 
 import scala.concurrent.duration._
 

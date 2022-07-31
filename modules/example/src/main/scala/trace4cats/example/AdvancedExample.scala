@@ -1,11 +1,9 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.effect.{IO, IOApp}
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus, TraceProcess}
-import io.janstenpickle.trace4cats.rate.sampling.RateSpanSampler
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
+import trace4cats._
 
 import scala.concurrent.duration._
 

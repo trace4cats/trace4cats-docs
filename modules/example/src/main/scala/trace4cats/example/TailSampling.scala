@@ -1,4 +1,4 @@
-package io.janstenpickle.trace4cats.example
+package trace4cats.example
 
 import cats.data.NonEmptySet
 import cats.effect.{IO, IOApp, Resource}
@@ -6,14 +6,10 @@ import cats.syntax.semigroup._
 import fs2.Chunk
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
-import io.janstenpickle.trace4cats.Span
-import io.janstenpickle.trace4cats.`export`.{CompleterConfig, QueuedSpanCompleter}
-import io.janstenpickle.trace4cats.avro.AvroSpanExporter
-import io.janstenpickle.trace4cats.kernel.SpanSampler
-import io.janstenpickle.trace4cats.model.{SpanKind, SpanStatus, TraceProcess}
-import io.janstenpickle.trace4cats.rate.sampling.RateTailSpanSampler
-import io.janstenpickle.trace4cats.sampling.tail.cache.LocalCacheSampleDecisionStore
-import io.janstenpickle.trace4cats.sampling.tail.{TailSamplingSpanExporter, TailSpanSampler}
+import trace4cats._
+import trace4cats.avro.AvroSpanExporter
+import trace4cats.sampling.tail.cache.LocalCacheSampleDecisionStore
+import trace4cats.sampling.tail.{RateTailSpanSampler, TailSamplingSpanExporter, TailSpanSampler}
 
 import scala.concurrent.duration._
 

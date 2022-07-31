@@ -30,12 +30,8 @@ lazy val example = (project in file("modules/example"))
   .settings(
     name := "trace4cats-example",
     libraryDependencies ++= Seq(
-      Dependencies.trace4catsInject,
-      Dependencies.trace4catsFiltering,
-      Dependencies.trace4catsDynamicSampling,
+      Dependencies.trace4catsCore,
       Dependencies.trace4catsFs2,
-      Dependencies.trace4catsLogExporter,
-      Dependencies.trace4catsRateSampling,
       Dependencies.trace4catsTailSampling,
       Dependencies.trace4catsAvro,
       Dependencies.trace4catsAvroExporter,
