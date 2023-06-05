@@ -14,7 +14,7 @@ object Dependencies {
     val trace4catsJaeger = "0.14.0"
     val trace4catsNatchez = "0.14.0"
     val trace4catsNewrelic = "0.14.0"
-    val trace4catsOtel = "0.14.0"
+    val trace4catsOtel = "0.14.1"
     val trace4catsSttp = "0.14.0"
     val trace4catsTailSamplingExtras = "0.14.0"
     val trace4catsDynamicSamplingExtras = "0.14.0"
