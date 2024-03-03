@@ -25,7 +25,7 @@ object Dependencies {
     val http4s = "0.23.12"
     val sttpClient3 = "3.6.2"
 
-    val kindProjector = "0.13.2"
+    val kindProjector = "0.13.3"
     val betterMonadicFor = "0.3.1"
   }
 
