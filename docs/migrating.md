@@ -17,7 +17,7 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.1")
 Then run the following command to run the rules.
 
 ```bash
-sbt "scalafixEnable; scalafix --rules github:trace4cats/trace4cats-scalafix/v0_14?sha=v0.14.0"
+sbt "scalafixEnable; scalafixAll --rules github:trace4cats/trace4cats-scalafix/v0_14?sha=v0.14.0"
 ```
 
 ## Dependencies
